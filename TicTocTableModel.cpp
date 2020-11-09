@@ -2,20 +2,27 @@
 
 #include <iostream>
 
-TicTocTableModel::TicTocTableModel(QObject * parent) : m_board()
+TicTocTableModel::TicTocTableModel(QObject * parent) : m_game(), m_hasStarted(false), m_gameOverMessage(QString())
 {
-    connect(&m_board, &TicTacToeBoard::squareChanged, this, [this](Vector2 position){
+    connect(&m_game, &TicTacToeGame::squareChanged, this, [this](Vector2 position){
         emit dataChanged(index(position.x, position.y), index(position.x, position.y));
     });
 
-    connect(&m_board, &TicTacToeBoard::squaresChanged, this, [this](){
-        emit dataChanged(index(0,0), index(rowCount(), columnCount()));
+    connect(&m_game, &TicTacToeGame::squaresChanged, this, [this](){
+        emit dataChanged(index(0,0), index(rowCount() - 1, columnCount() - 1));
+    });
+
+    connect(&m_game, &TicTacToeGame::gameOver, this, [this](QString message){
+        m_hasStarted = false;
+        emit hasStartedChanged();
+        m_gameOverMessage = message;
+        emit gameOverMessageChanged();
     });
 }
 
 TicTocTableModel::~TicTocTableModel()
 {
-    m_board.disconnect(); // TODO: Read up on this function
+    m_game.disconnect(); // TODO: Read up on this function
 }
 
 int TicTocTableModel::rowCount(const QModelIndex &parent) const
@@ -35,7 +42,7 @@ QVariant TicTocTableModel::data(const QModelIndex &index, int role) const
 
     switch(role){
         case ImagePathRole:
-        return QVariant(PlayerToString(m_board.getSquare({index.row(), index.column()})));
+        return QVariant(PlayerToString(m_game.get_square({index.row(), index.column()})));
     }
 
     return QVariant();
@@ -52,7 +59,7 @@ QHash<int, QByteArray> TicTocTableModel::roleNames() const
 void TicTocTableModel::interact(const int row, const int column)
 {
     try {
-        m_board.playerPlaceMarker({row, column});
+        m_game.update({row, column});
     }  catch (std::logic_error e) {
         std::cerr << e.what() << std::endl;
     }
@@ -60,7 +67,19 @@ void TicTocTableModel::interact(const int row, const int column)
 
 void TicTocTableModel::player_set_piece(int piece_id)
 {
-    m_board.init(static_cast<Player>(piece_id), std::make_shared<TicTacToeStrategy>());
+    m_game.init(static_cast<Player>(piece_id));
+    m_hasStarted = true;
+    emit hasStartedChanged();
+}
+
+QString TicTocTableModel::getGameOverMessage() const
+{
+    return m_gameOverMessage;
+}
+
+bool TicTocTableModel::getHasStarted() const
+{
+    return m_hasStarted;
 }
 
 

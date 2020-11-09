@@ -8,26 +8,40 @@ import TicTocTable 1.0
 Window {
     id: _window
     property int appWidth: 600
-    property int appHeight: 600
-    property bool playerHasChosenMarker: false
+    property int appHeight: _gameArea.height + _chooseMarker.height
 
     width: appWidth
     height: appHeight
     visible: true
     title: qsTr("TicTacToe")
 
-
     Rectangle{
         id: _chooseMarker
-        anchors.fill: parent
-        visible: !playerHasChosenMarker
+        anchors.top: parent.top
+        anchors.bottom: _gameArea.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: 400
+
+        visible: !_model.started
+
+        Label {
+            id: _msg
+            text: _model.message;
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.bottom: label.top
+            horizontalAlignment: Text.AlignHCenter
+            font.pointSize: 34
+        }
 
         Label {
             id: label
             text: qsTr("Choose a marker")
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.top: parent.top
+            anchors.top: _msg.bottom
             horizontalAlignment: Text.AlignHCenter
             font.pointSize: 34
             anchors.topMargin: 20
@@ -71,39 +85,48 @@ Window {
         }
     }
 
+    Rectangle {
+        id: _gameArea
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: _chooseMarker.bottom
+        anchors.bottom: parent.bottom
+        width: appWidth
+        height: 600
 
-    Flickable{
-        anchors.fill: parent
-        interactive: false
-        visible: playerHasChosenMarker
-
-        TableView{
+        Flickable{
+            id: _game
             anchors.fill: parent
-            columnSpacing: 1
-            rowSpacing: 1
-            clip: true
+            interactive: false
 
-            model: _model;
+            TableView{
+                anchors.fill: parent
+                columnSpacing: 1
+                rowSpacing: 1
+                clip: true
 
-            delegate: Rectangle {
-                implicitWidth: appWidth / 3
-                implicitHeight: appHeight / 3
-                border.width: 2
-                border.color: "grey"
+                model: _model;
 
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        if(mouse.button == Qt.LeftButton)
-                        {
-                            _model.interact(row, column);
+                delegate: Rectangle {
+                    implicitWidth: _gameArea.width / 3
+                    implicitHeight: _gameArea.height / 3
+                    border.width: 2
+                    border.color: "grey"
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            if(mouse.button == Qt.LeftButton && _model.started)
+                            {
+                                _model.interact(row, column);
+                            }
                         }
                     }
-                }
 
-                Image {
-                    anchors.fill: parent
-                    source: model.path
+                    Image {
+                        anchors.fill: parent
+                        source: model.path
+                    }
                 }
             }
         }

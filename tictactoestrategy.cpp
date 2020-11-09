@@ -1,109 +1,94 @@
 #include "tictactoestrategy.h"
 
-#include "tictactoeboard.h"
 #include <vector>
 #include <algorithm>
+#include <iterator>
+#include <iostream>
 
 TicTacToeStrategy::TicTacToeStrategy()
 {
 
 }
 
-Vector2 TicTacToeStrategy::get_square_for_opponent(const Player ** board, Player player)
+Vector2 TicTacToeStrategy::choose_move(const std::shared_ptr<TicTacToeBoard> & board, Player opponent)
 {
-    // check for player win conditions
+    auto result = minimax(board.get(), true, opponent, 0);
 
-    auto opponent = player == Player::Circle ? Player::Cross : Player::Circle;
+    std::cout << "Chose move (" << result.move.x << ", " << result.move.y << ") with a score of " << result.value << std::endl;
 
-
-
-    return Vector2{1,1};
+    return result.move;
 }
 
-void TicTacToeStrategy::minimax(const Player **board, Player player, int depth)
-{
-    auto win = winner(board);
-
-
+Player get_other_player(Player plr){
+    switch (plr) {
+        case Player::Circle:
+            return Player::Cross;
+        case Player::Cross:
+            return Player::Circle;
+        case Player::Empty:
+            return Player::Empty;
+    }
 }
 
-Player TicTacToeStrategy::winner(const Player **board)
+choice TicTacToeStrategy::minimax(const TicTacToeBoard * board, bool opponents_turn, Player opponent, int depth)
 {
-    auto r1 = row1(board);
-    if(get_unique_values(r1) == 1 && r1[0] != Player::Empty) return r1[0];
+    auto winner = board->has_winner();
 
-    auto r2 = row2(board);
-    if(get_unique_values(r2) == 1 && r2[0] != Player::Empty) return r2[0];
+    if(winner == opponent){
+        return choice{board->last_move(), 10 - depth, depth};
+    }
+    else if(winner == get_other_player(opponent)){
+        return choice{board->last_move(), -10 + depth, depth};
+    }
+    else if(!board->has_space_left()){
+        return choice{board->last_move(), 0, depth};
+    }
 
-    auto r3 = row3(board);
-    if(get_unique_values(r3) == 1 && r3[0] != Player::Empty) return r3[0];
+    std::vector<Vector2> candidates(board->legal_moves());
+    std::vector<choice> candidate_choices;
 
-    auto c1 = col1(board);
-    if(get_unique_values(c1) == 1 && c1[0] != Player::Empty) return c1[0];
+    for(auto & i : candidates){
+        TicTacToeBoard board_copy(*board);
 
-    auto c2 = col2(board);
-    if(get_unique_values(c2) == 1 && c2[0] != Player::Empty) return c2[0];
+        board_copy.place_marker(i, opponent);
 
-    auto c3 = col3(board);
-    if(get_unique_values(c3) == 1 && c3[0] != Player::Empty) return c3[0];
+        auto result = minimax(&board_copy, !opponents_turn, get_other_player(opponent), depth + 1);
 
-    auto d1 = diag1(board);
-    if(get_unique_values(d1) == 1 && d1[0] != Player::Empty) return d1[0];
+        result.move = board_copy.last_move();
 
-    auto d2 = diag2(board);
-    if(get_unique_values(d2) == 1 && d2[0] != Player::Empty) return d2[0];
+        candidate_choices.push_back(result);
+    }
 
-    return Player::Empty;
+    choice best_choice;
+    int best_value = -100;
+    choice worst_choice;
+    int worst_value = 100;
+
+    for(auto & choice : candidate_choices){
+        if(opponents_turn && choice.value > best_value){
+            best_choice = choice;
+            best_value = choice.value;
+        }
+        else if(!opponents_turn && choice.value < worst_value){
+            worst_choice = choice;
+            worst_value = choice.value;
+        }
+    }
+
+    return opponents_turn ? best_choice : worst_choice;
 }
 
-int TicTacToeStrategy::get_unique_values(std::array<Player, 3> line)
+
+choice::choice() : move{0,0}, value(0), depth(0) {}
+
+choice::choice(Vector2 mv, int val, int dep) : move(mv), value(val), depth(dep) {}
+
+choice::choice(const choice &other) : move(other.move), value(other.value), depth(other.depth) {}
+
+choice &choice::operator=(const choice &other)
 {
-   std::vector<Player> v(std::begin(line), std::end(line));
-
-   auto last = std::unique(v.begin(), v.end());
-
-   v.erase(last, v.end());
-
-   return v.size();
-}
-
-std::array<Player, 3>  TicTacToeStrategy::diag2(const Player **board)
-{
-    return std::array<Player, 3>{board[2][0], board[1][1], board[0][2]};
-}
-
-
-std::array<Player, 3>  TicTacToeStrategy::diag1(const Player **board)
-{
-    return std::array<Player, 3>{board[0][0], board[1][1], board[2][2]};
-}
-
-std::array<Player, 3> TicTacToeStrategy::col3(const Player **board)
-{
-    return std::array<Player, 3>{board[0][2], board[1][2], board[2][2]};
-}
-
-std::array<Player, 3> TicTacToeStrategy::col2(const Player **board)
-{
-    return std::array<Player, 3>{board[0][1], board[1][1], board[2][1]};
-}
-
-std::array<Player, 3> TicTacToeStrategy::col1(const Player **board)
-{
-    return std::array<Player, 3>{board[0][0], board[1][0], board[2][0]};
-}
-
-std::array<Player, 3> TicTacToeStrategy::row3(const Player **board)
-{
-    return std::array<Player, 3>{board[2][0], board[2][1], board[2][2]};
-}
-
-std::array<Player, 3> TicTacToeStrategy::row2(const Player **board)
-{
-    return std::array<Player, 3>{board[1][0], board[1][1], board[1][2]};
-}
-
-std::array<Player, 3> TicTacToeStrategy::row1(const Player **board)
-{
-    return std::array<Player, 3>{board[0][0], board[0][1], board[0][2]};
+    move = other.move;
+    value = other.value;
+    depth = other.depth;
+    return *this;
 }
