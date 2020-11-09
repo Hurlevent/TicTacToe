@@ -41,14 +41,19 @@ void TicTacToeGame::update(Vector2 player_clicked)
 {
     assert(has_started());
 
-    m_board->place_marker(player_clicked, m_player_marker);
+    try{
+        m_board->place_marker(player_clicked, m_player_marker);
 
-    if(!check_for_winners()){
-        auto opponent_move = m_opponent_behavour.choose_move(m_board, m_opponent_marker);
+        if(!check_for_winners()){
+            auto opponent_move = m_opponent_behavour.choose_move(m_board, m_opponent_marker);
 
-        m_board->place_marker(opponent_move, m_opponent_marker);
+            m_board->place_marker(opponent_move, m_opponent_marker);
 
-        check_for_winners();
+            check_for_winners();
+        }
+
+    } catch(std::logic_error e){
+        std::cerr << e.what() << std::endl;
     }
 }
 

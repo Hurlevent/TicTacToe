@@ -46,14 +46,13 @@ bool positionOutOfBounds(Vector2 position)
 }
 
 
-// TODO: Better exception handling
 void TicTacToeBoard::place_marker(Vector2 position, Player marker)
 {
     if(positionOutOfBounds(position))
-        std::cerr << "Position out of bounds" << std::endl;
+        throw std::out_of_range("Position out of bounds");
 
     if(m_board[position.x][position.y] != Player::Empty)
-        std::cerr << "Cannot place marker on top of existing marker" << std::endl;
+        throw std::logic_error("Cannot place marker on top of existing marker");
 
     m_board[position.x][position.y] = marker;
     m_moves.push_back(position);
