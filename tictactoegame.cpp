@@ -27,6 +27,11 @@ void TicTacToeGame::init(Player player_marker)
     m_board->reset_board();
 }
 
+void TicTacToeGame::reset()
+{
+    m_board->reset_board();
+}
+
 bool TicTacToeGame::has_started() const
 {
     return m_player_marker != Player::Empty && m_opponent_marker != Player::Empty;
@@ -57,18 +62,18 @@ bool TicTacToeGame::check_for_winners()
     auto winner = m_board->has_winner();
 
     if(winner == Player::Circle){
-        m_board->reset_board();
+        //m_board->reset_board();
         emit gameOver(QString("Circle has won!"));
         return true;
     }
     else if(winner == Player::Cross){
-        m_board->reset_board();
+        //m_board->reset_board();
         emit gameOver(QString("Cross has won!"));
         return true;
     }
     else if(!m_board->has_space_left())
     {
-        m_board->reset_board();
+        //m_board->reset_board();
         emit gameOver(QString("It's a draw!"));
         return true;
     }

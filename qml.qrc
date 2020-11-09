@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>game.qml</file>
+        <file>marker.qml</file>
     </qresource>
 </RCC>

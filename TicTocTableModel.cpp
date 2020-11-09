@@ -72,6 +72,14 @@ void TicTocTableModel::player_set_piece(int piece_id)
     emit hasStartedChanged();
 }
 
+void TicTocTableModel::reset_board()
+{
+    m_game.reset();
+
+    m_gameOverMessage = QString();
+    emit gameOverMessageChanged();
+}
+
 QString TicTocTableModel::getGameOverMessage() const
 {
     return m_gameOverMessage;

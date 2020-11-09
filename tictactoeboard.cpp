@@ -35,8 +35,6 @@ void TicTacToeBoard::reset_board()
         }
     }
 
-    std::cout << "Reset board" << std::endl;
-
     m_moves.clear();
 
     emit squaresChanged();
@@ -48,10 +46,9 @@ bool positionOutOfBounds(Vector2 position)
 }
 
 
+// TODO: Better exception handling
 void TicTacToeBoard::place_marker(Vector2 position, Player marker)
 {
-    std::cout << "player marker for " << (marker == Player::Circle ? "Circle" : "Cross") << std::endl;
-
     if(positionOutOfBounds(position))
         std::cerr << "Position out of bounds" << std::endl;
 

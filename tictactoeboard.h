@@ -8,8 +8,6 @@
 
 #include <QObject>
 
-// Either make the board an QObject, or change board to table of QObjects
-
 class TicTacToeBoard : public QObject
 {
     Q_OBJECT

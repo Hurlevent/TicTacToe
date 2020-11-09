@@ -26,8 +26,8 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
     Q_INVOKABLE void interact(const int row, const int column);
-
     Q_INVOKABLE void player_set_piece(int piece_id);
+    Q_INVOKABLE void reset_board();
 
     bool getHasStarted() const;
     QString getGameOverMessage()const;

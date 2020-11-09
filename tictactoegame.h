@@ -18,7 +18,8 @@ public:
     ~TicTacToeGame();
 
     void init(Player player_marker);
-    bool has_started()const;
+    void reset();
+    bool has_started() const;
     void update(Vector2 player_clicked);
 
     Player get_square(Vector2 position) const;
