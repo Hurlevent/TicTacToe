@@ -35,7 +35,6 @@ Window {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: _msg.bottom
-        anchors.bottom: _ldr.top
         horizontalAlignment: Text.AlignHCenter
         font.pointSize: 34
         height: 50
