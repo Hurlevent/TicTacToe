@@ -19,10 +19,10 @@ TicTacToeGame::~TicTacToeGame()
     m_board->disconnect();
 }
 
-void TicTacToeGame::init(Player player_marker)
+void TicTacToeGame::init(Square player_marker)
 {
     m_player_marker = player_marker;
-    m_opponent_marker = player_marker == Player::Circle ? Player::Cross : Player::Circle;
+    m_opponent_marker = player_marker == Square::Circle ? Square::Cross : Square::Circle;
 
     m_board->reset_board();
 }
@@ -34,7 +34,7 @@ void TicTacToeGame::reset()
 
 bool TicTacToeGame::has_started() const
 {
-    return m_player_marker != Player::Empty && m_opponent_marker != Player::Empty;
+    return m_player_marker != Square::Empty && m_opponent_marker != Square::Empty;
 }
 
 void TicTacToeGame::update(Vector2 player_clicked)
@@ -57,7 +57,7 @@ void TicTacToeGame::update(Vector2 player_clicked)
     }
 }
 
-Player TicTacToeGame::get_square(Vector2 position) const
+Square TicTacToeGame::get_square(Vector2 position) const
 {
     return m_board->getSquare(position);
 }
@@ -66,19 +66,16 @@ bool TicTacToeGame::check_for_winners()
 {
     auto winner = m_board->has_winner();
 
-    if(winner == Player::Circle){
-        //m_board->reset_board();
+    if(winner == Square::Circle){
         emit gameOver(QString("Circle has won!"));
         return true;
     }
-    else if(winner == Player::Cross){
-        //m_board->reset_board();
+    else if(winner == Square::Cross){
         emit gameOver(QString("Cross has won!"));
         return true;
     }
     else if(!m_board->has_space_left())
     {
-        //m_board->reset_board();
         emit gameOver(QString("It's a draw!"));
         return true;
     }

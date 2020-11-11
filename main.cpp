@@ -2,14 +2,9 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
-
 #include <QStandardItemModel>
 
-#include "TicTocTableModel.h"
-
-
-
-// TODO: I think I should create the UI first, and the AI opponent second.
+#include "TicTacToeTableModel.h"
 
 int main(int argc, char *argv[])
 {
@@ -17,21 +12,9 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
+    qmlRegisterType<TicTacToeTableModel>("TicTocTable", 1, 0, "TicTocTableModel");
 
-    /*QStandardItemModel model(3,3);
-
-    for(auto row = 0; row < model.rowCount(); ++row){
-        for(auto column = 0; column < model.columnCount(); ++column){
-
-        }
-    }*/
-
-
-
-    qmlRegisterType<TicTocTableModel>("TicTocTable", 1, 0, "TicTocTableModel");
-
-
-    TicTocTableModel model;
+    TicTacToeTableModel model;
 
     QQmlApplicationEngine engine;
 

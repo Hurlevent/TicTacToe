@@ -5,7 +5,7 @@
 #include <iostream>
 
 TicTacToeBoard::TicTacToeBoard()
-    : m_board{{Player::Empty, Player::Empty, Player::Empty}, {Player::Empty, Player::Empty, Player::Empty}, {Player::Empty, Player::Empty, Player::Empty}}
+    : m_board{{Square::Empty, Square::Empty, Square::Empty}, {Square::Empty, Square::Empty, Square::Empty}, {Square::Empty, Square::Empty, Square::Empty}}
 {}
 
 TicTacToeBoard::TicTacToeBoard(const TicTacToeBoard &other)
@@ -31,7 +31,7 @@ void TicTacToeBoard::reset_board()
 {
     for(auto x = 0; x < BoardSizeX; ++x){
         for(auto y = 0; y < BoardSizeY; ++y){
-            m_board[x][y] = Player::Empty;
+            m_board[x][y] = Square::Empty;
         }
     }
 
@@ -46,12 +46,12 @@ bool positionOutOfBounds(Vector2 position)
 }
 
 
-void TicTacToeBoard::place_marker(Vector2 position, Player marker)
+void TicTacToeBoard::place_marker(Vector2 position, Square marker)
 {
     if(positionOutOfBounds(position))
         throw std::out_of_range("Position out of bounds");
 
-    if(m_board[position.x][position.y] != Player::Empty)
+    if(m_board[position.x][position.y] != Square::Empty)
         throw std::logic_error("Cannot place marker on top of existing marker");
 
     m_board[position.x][position.y] = marker;
@@ -60,7 +60,7 @@ void TicTacToeBoard::place_marker(Vector2 position, Player marker)
     emit squareChanged(position);
 }
 
-Player TicTacToeBoard::getSquare(Vector2 position) const
+Square TicTacToeBoard::getSquare(Vector2 position) const
 {
     if(positionOutOfBounds(position))
         throw std::out_of_range("Position out of bounds");
@@ -68,8 +68,8 @@ Player TicTacToeBoard::getSquare(Vector2 position) const
     return m_board[position.x][position.y];
 }
 
-int get_unique_values(std::array<Player, 3> line){
-    std::vector<Player> v(std::begin(line), std::end(line));
+int get_unique_values(std::array<Square, 3> line){
+    std::vector<Square> v(std::begin(line), std::end(line));
 
     auto last = std::unique(v.begin(), v.end());
 
@@ -78,40 +78,40 @@ int get_unique_values(std::array<Player, 3> line){
     return v.size();
 }
 
-Player TicTacToeBoard::has_winner() const
+Square TicTacToeBoard::has_winner() const
 {
-    auto r1 = std::array<Player, 3>{m_board[0][0], m_board[0][1], m_board[0][2]};
-    if(get_unique_values(r1) == 1 && r1[0] != Player::Empty) return r1[0];
+    auto r1 = std::array<Square, 3>{m_board[0][0], m_board[0][1], m_board[0][2]};
+    if(get_unique_values(r1) == 1 && r1[0] != Square::Empty) return r1[0];
 
-    auto r2 = std::array<Player, 3>{m_board[1][0], m_board[1][1], m_board[1][2]};
-    if(get_unique_values(r2) == 1 && r2[0] != Player::Empty) return r2[0];
+    auto r2 = std::array<Square, 3>{m_board[1][0], m_board[1][1], m_board[1][2]};
+    if(get_unique_values(r2) == 1 && r2[0] != Square::Empty) return r2[0];
 
-    auto r3 = std::array<Player, 3>{m_board[2][0], m_board[2][1], m_board[2][2]};
-    if(get_unique_values(r3) == 1 && r3[0] != Player::Empty) return r3[0];
+    auto r3 = std::array<Square, 3>{m_board[2][0], m_board[2][1], m_board[2][2]};
+    if(get_unique_values(r3) == 1 && r3[0] != Square::Empty) return r3[0];
 
-    auto c1 = std::array<Player, 3>{m_board[0][0], m_board[1][0], m_board[2][0]};
-    if(get_unique_values(c1) == 1 && c1[0] != Player::Empty) return c1[0];
+    auto c1 = std::array<Square, 3>{m_board[0][0], m_board[1][0], m_board[2][0]};
+    if(get_unique_values(c1) == 1 && c1[0] != Square::Empty) return c1[0];
 
-    auto c2 = std::array<Player, 3>{m_board[0][1], m_board[1][1], m_board[2][1]};
-    if(get_unique_values(c2) == 1 && c2[0] != Player::Empty) return c2[0];
+    auto c2 = std::array<Square, 3>{m_board[0][1], m_board[1][1], m_board[2][1]};
+    if(get_unique_values(c2) == 1 && c2[0] != Square::Empty) return c2[0];
 
-    auto c3 = std::array<Player, 3>{m_board[0][2], m_board[1][2], m_board[2][2]};
-    if(get_unique_values(c3) == 1 && c3[0] != Player::Empty) return c3[0];
+    auto c3 = std::array<Square, 3>{m_board[0][2], m_board[1][2], m_board[2][2]};
+    if(get_unique_values(c3) == 1 && c3[0] != Square::Empty) return c3[0];
 
-    auto d1 = std::array<Player, 3>{m_board[0][0], m_board[1][1], m_board[2][2]};
-    if(get_unique_values(d1) == 1 && d1[0] != Player::Empty) return d1[0];
+    auto d1 = std::array<Square, 3>{m_board[0][0], m_board[1][1], m_board[2][2]};
+    if(get_unique_values(d1) == 1 && d1[0] != Square::Empty) return d1[0];
 
-    auto d2 = std::array<Player, 3>{m_board[2][0], m_board[1][1], m_board[0][2]};
-    if(get_unique_values(d2) == 1 && d2[0] != Player::Empty) return d2[0];
+    auto d2 = std::array<Square, 3>{m_board[2][0], m_board[1][1], m_board[0][2]};
+    if(get_unique_values(d2) == 1 && d2[0] != Square::Empty) return d2[0];
 
-    return Player::Empty;
+    return Square::Empty;
 }
 
 bool TicTacToeBoard::has_space_left() const
 {
     for(auto x = 0; x < BoardSizeX; ++x){
         for(auto y = 0; y < BoardSizeY; ++y){
-            if(m_board[x][y] == Player::Empty){
+            if(m_board[x][y] == Square::Empty){
                 return true;
             }
         }
@@ -126,7 +126,7 @@ std::vector<Vector2> TicTacToeBoard::legal_moves() const
 
     for(auto x = 0; x < BoardSizeX; ++x){
         for(auto y = 0; y < BoardSizeY; ++y){
-            if(m_board[x][y] == Player::Empty){
+            if(m_board[x][y] == Square::Empty){
                 options.push_back({x,y});
             }
         }

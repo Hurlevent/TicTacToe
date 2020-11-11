@@ -1,7 +1,7 @@
 #ifndef TICTACTOEBOARD_H
 #define TICTACTOEBOARD_H
 
-#include "Players.h"
+#include "common.h"
 
 #include <memory>
 #include <vector>
@@ -18,12 +18,12 @@ public:
     TicTacToeBoard & operator=(const TicTacToeBoard & other);
 
     void reset_board();
-    void place_marker(Vector2 position, Player marker);
-    Player getSquare(Vector2 position) const;
+    void place_marker(Vector2 position, Square marker);
+    Square getSquare(Vector2 position) const;
     static const unsigned short BoardSizeX = 3;
     static const unsigned short BoardSizeY = 3;
 
-    Player has_winner() const;
+    Square has_winner() const;
     bool has_space_left() const;
     std::vector<Vector2> legal_moves() const;
     Vector2 last_move() const;
@@ -33,8 +33,8 @@ signals:
     void squaresChanged();
 
 private:
-    Player m_board[BoardSizeX][BoardSizeY];
-    std::vector<Vector2> m_moves; // chould this be done another way?
+    Square m_board[BoardSizeX][BoardSizeY];
+    std::vector<Vector2> m_moves;
 };
 
 #endif // TICTACTOEBOARD_H

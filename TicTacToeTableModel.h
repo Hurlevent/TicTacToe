@@ -2,11 +2,11 @@
 #define TABLEMODEL_H
 
 #include "QAbstractTableModel"
-#include "Players.h"
+#include "common.h"
 
 #include "tictactoegame.h"
 
-class TicTocTableModel : public QAbstractTableModel
+class TicTacToeTableModel : public QAbstractTableModel
 {
     Q_OBJECT
 public:
@@ -14,8 +14,8 @@ public:
        ImagePathRole = Qt::UserRole + 1,
     };
 
-    explicit TicTocTableModel(QObject * parent = nullptr);
-    virtual ~TicTocTableModel();
+    explicit TicTacToeTableModel(QObject * parent = nullptr);
+    virtual ~TicTacToeTableModel();
 
     Q_PROPERTY(bool started MEMBER m_hasStarted READ getHasStarted NOTIFY hasStartedChanged)
     Q_PROPERTY(QString message MEMBER m_gameOverMessage READ getGameOverMessage NOTIFY gameOverMessageChanged)

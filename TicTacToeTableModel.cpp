@@ -1,8 +1,8 @@
-#include "TicTocTableModel.h"
+#include "TicTacToeTableModel.h"
 
 #include <iostream>
 
-TicTocTableModel::TicTocTableModel(QObject * parent) : m_game(), m_hasStarted(false), m_gameOverMessage(QString())
+TicTacToeTableModel::TicTacToeTableModel(QObject * parent) : m_game(), m_hasStarted(false), m_gameOverMessage(QString())
 {
     connect(&m_game, &TicTacToeGame::squareChanged, this, [this](Vector2 position){
         emit dataChanged(index(position.x, position.y), index(position.x, position.y));
@@ -20,35 +20,35 @@ TicTocTableModel::TicTocTableModel(QObject * parent) : m_game(), m_hasStarted(fa
     });
 }
 
-TicTocTableModel::~TicTocTableModel()
+TicTacToeTableModel::~TicTacToeTableModel()
 {
     m_game.disconnect(); // TODO: Read up on this function
 }
 
-int TicTocTableModel::rowCount(const QModelIndex &parent) const
+int TicTacToeTableModel::rowCount(const QModelIndex &parent) const
 {
     return TicTacToeBoard::BoardSizeX;
 }
 
-int TicTocTableModel::columnCount(const QModelIndex &parent) const
+int TicTacToeTableModel::columnCount(const QModelIndex &parent) const
 {
     return TicTacToeBoard::BoardSizeY;
 }
 
-QVariant TicTocTableModel::data(const QModelIndex &index, int role) const
+QVariant TicTacToeTableModel::data(const QModelIndex &index, int role) const
 {
     if(!index.isValid())
             return QVariant();
 
     switch(role){
         case ImagePathRole:
-        return QVariant(PlayerToString(m_game.get_square({index.row(), index.column()})));
+        return QVariant(SquareToString(m_game.get_square({index.row(), index.column()})));
     }
 
     return QVariant();
 }
 
-QHash<int, QByteArray> TicTocTableModel::roleNames() const
+QHash<int, QByteArray> TicTacToeTableModel::roleNames() const
 {
     QHash<int, QByteArray> roles;
     roles[ImagePathRole] = "path";
@@ -56,7 +56,7 @@ QHash<int, QByteArray> TicTocTableModel::roleNames() const
     return roles;
 }
 
-void TicTocTableModel::interact(const int row, const int column)
+void TicTacToeTableModel::interact(const int row, const int column)
 {
     try {
         m_game.update({row, column});
@@ -65,14 +65,14 @@ void TicTocTableModel::interact(const int row, const int column)
     }
 }
 
-void TicTocTableModel::player_set_piece(int piece_id)
+void TicTacToeTableModel::player_set_piece(int piece_id)
 {
-    m_game.init(static_cast<Player>(piece_id));
+    m_game.init(static_cast<Square>(piece_id));
     m_hasStarted = true;
     emit hasStartedChanged();
 }
 
-void TicTocTableModel::reset_board()
+void TicTacToeTableModel::reset_board()
 {
     m_game.reset();
 
@@ -80,12 +80,12 @@ void TicTocTableModel::reset_board()
     emit gameOverMessageChanged();
 }
 
-QString TicTocTableModel::getGameOverMessage() const
+QString TicTacToeTableModel::getGameOverMessage() const
 {
     return m_gameOverMessage;
 }
 
-bool TicTocTableModel::getHasStarted() const
+bool TicTacToeTableModel::getHasStarted() const
 {
     return m_hasStarted;
 }

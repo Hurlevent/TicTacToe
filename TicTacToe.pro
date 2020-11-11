@@ -7,13 +7,13 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        TicTocTableModel.cpp \
+        TicTacToeTableModel.cpp \
         main.cpp \
+        tictactoeai.cpp \
         tictactoeboard.cpp \
-        tictactoegame.cpp \
-        tictactoestrategy.cpp
+        tictactoegame.cpp
 
-RESOURCES += qml.qrc RedCircle.png RedCross.png
+RESOURCES += qml.qrc RedCircle.png BlueCross.png NoMarker.png
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
@@ -27,8 +27,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    Players.h \
-    TicTocTableModel.h \
+    TicTacToeTableModel.h \
+    common.h \
+    tictactoeai.h \
     tictactoeboard.h \
-    tictactoegame.h \
-    tictactoestrategy.h
+    tictactoegame.h

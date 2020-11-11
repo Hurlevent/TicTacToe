@@ -2,13 +2,12 @@
 #define TICTACTOEGAME_H
 
 #include <memory>
-#include <functional>
 
 #include <QObject>
 
 #include "tictactoeboard.h"
-#include "Players.h"
-#include "tictactoestrategy.h"
+#include "common.h"
+#include "tictactoeai.h"
 
 class TicTacToeGame : public QObject
 {
@@ -17,12 +16,12 @@ public:
     explicit TicTacToeGame();
     ~TicTacToeGame();
 
-    void init(Player player_marker);
+    void init(Square player_marker);
     void reset();
     bool has_started() const;
     void update(Vector2 player_clicked);
 
-    Player get_square(Vector2 position) const;
+    Square get_square(Vector2 position) const;
 
 signals:
     void squareChanged(Vector2 position);
@@ -30,14 +29,14 @@ signals:
     void gameOver(QString message);
 
 private:
-    Player has_winner() const;
+    Square has_winner() const;
     bool check_for_winners();
 
     std::shared_ptr<TicTacToeBoard> m_board;
-    Player m_player_marker;
-    Player m_opponent_marker;
+    Square m_player_marker;
+    Square m_opponent_marker;
 
-    TicTacToeStrategy m_opponent_behavour;
+    TicTacToeAI m_opponent_behavour;
 };
 
 #endif // TICTACTOEGAME_H

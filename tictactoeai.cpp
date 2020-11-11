@@ -1,51 +1,51 @@
-#include "tictactoestrategy.h"
+#include "tictactoeai.h"
 
 #include <vector>
 #include <algorithm>
 #include <iterator>
 #include <iostream>
 
-TicTacToeStrategy::TicTacToeStrategy()
+TicTacToeAI::TicTacToeAI()
 {
 
 }
 
-Vector2 TicTacToeStrategy::choose_move(const std::shared_ptr<TicTacToeBoard> & board, Player opponent)
+Vector2 TicTacToeAI::choose_move(const std::shared_ptr<TicTacToeBoard> & board, Square opponent)
 {
     auto result = minimax(board.get(), true, opponent, 0);
 
-    std::cout << "Chose move (" << result.move.x << ", " << result.move.y << ") with a score of " << result.value << std::endl;
+    //std::cout << "Chose move (" << result.move.x << ", " << result.move.y << ") with a score of " << result.value << std::endl;
 
     return result.move;
 }
 
-Player get_other_player(Player plr){
+Square get_other_player(Square plr){
     switch (plr) {
-        case Player::Circle:
-            return Player::Cross;
-        case Player::Cross:
-            return Player::Circle;
-        case Player::Empty:
-            return Player::Empty;
+        case Square::Circle:
+            return Square::Cross;
+        case Square::Cross:
+            return Square::Circle;
+        case Square::Empty:
+            return Square::Empty;
     }
 }
 
-choice TicTacToeStrategy::minimax(const TicTacToeBoard * board, bool opponents_turn, Player opponent, int depth)
+Choice TicTacToeAI::minimax(const TicTacToeBoard * board, bool opponents_turn, Square opponent, int depth)
 {
     auto winner = board->has_winner();
 
     if(winner == opponent){
-        return choice{board->last_move(), 10 - depth, depth};
+        return Choice{board->last_move(), 10 - depth, depth};
     }
     else if(winner == get_other_player(opponent)){
-        return choice{board->last_move(), -10 + depth, depth};
+        return Choice{board->last_move(), -10 + depth, depth};
     }
     else if(!board->has_space_left()){
-        return choice{board->last_move(), 0, depth};
+        return Choice{board->last_move(), 0, depth};
     }
 
     std::vector<Vector2> candidates(board->legal_moves());
-    std::vector<choice> candidate_choices;
+    std::vector<Choice> candidate_choices;
 
     for(auto & i : candidates){
         TicTacToeBoard board_copy(*board);
@@ -59,9 +59,9 @@ choice TicTacToeStrategy::minimax(const TicTacToeBoard * board, bool opponents_t
         candidate_choices.push_back(result);
     }
 
-    choice best_choice;
+    Choice best_choice;
     int best_value = -100;
-    choice worst_choice;
+    Choice worst_choice;
     int worst_value = 100;
 
     for(auto & choice : candidate_choices){
@@ -79,13 +79,13 @@ choice TicTacToeStrategy::minimax(const TicTacToeBoard * board, bool opponents_t
 }
 
 
-choice::choice() : move{0,0}, value(0), depth(0) {}
+Choice::Choice() : move{0,0}, value(0), depth(0) {}
 
-choice::choice(Vector2 mv, int val, int dep) : move(mv), value(val), depth(dep) {}
+Choice::Choice(Vector2 mv, int val, int dep) : move(mv), value(val), depth(dep) {}
 
-choice::choice(const choice &other) : move(other.move), value(other.value), depth(other.depth) {}
+Choice::Choice(const Choice &other) : move(other.move), value(other.value), depth(other.depth) {}
 
-choice &choice::operator=(const choice &other)
+Choice &Choice::operator=(const Choice &other)
 {
     move = other.move;
     value = other.value;

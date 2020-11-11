@@ -27,7 +27,7 @@ Item {
             anchors.left: parent.left
             anchors.top: label.bottom
             anchors.bottom: parent.bottom
-            source: "RedCross.png"
+            source: "BlueCross.png"
             fillMode: Image.PreserveAspectFit
 
             MouseArea {
