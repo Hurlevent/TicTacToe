@@ -1,9 +1,8 @@
 #include "tictactoegame.h"
 
-#include <array>
 #include <iostream>
 
-TicTacToeGame::TicTacToeGame(std::shared_ptr<TicTacToeBoard> board) : m_board(board), m_opponent_behavour()
+TicTacToeGame::TicTacToeGame(std::shared_ptr<TicTacToeBoard> board) : m_board(board), m_opponent_behavour(new TicTacToeMinimaxAI)
 {}
 
 TicTacToeGame::~TicTacToeGame()
@@ -32,14 +31,14 @@ void TicTacToeGame::update(Vector2 player_clicked)
         m_board->place_marker(player_clicked, m_player_marker);
 
         if(!check_for_winners()){
-            auto opponent_move = m_opponent_behavour.choose_move(m_board, m_opponent_marker);
+            auto opponent_move = m_opponent_behavour->choose_move(m_board, m_opponent_marker);
 
             m_board->place_marker(opponent_move, m_opponent_marker);
 
             check_for_winners();
         }
 
-    } catch(std::logic_error e){
+    } catch(std::logic_error & e){
         std::cerr << e.what() << std::endl;
     }
 }

@@ -5,12 +5,12 @@
 #include <iterator>
 #include <iostream>
 
-TicTacToeAI::TicTacToeAI()
+TicTacToeMinimaxAI::TicTacToeMinimaxAI()
 {
 
 }
 
-Vector2 TicTacToeAI::choose_move(const std::shared_ptr<TicTacToeBoard> & board, Square opponent)
+Vector2 TicTacToeMinimaxAI::choose_move(const std::shared_ptr<TicTacToeBoard> & board, Square opponent)
 {
     auto result = minimax(board.get(), true, opponent, 0);
 
@@ -30,7 +30,7 @@ Square get_other_player(Square plr){
     }
 }
 
-Choice TicTacToeAI::minimax(const TicTacToeBoard * board, bool opponents_turn, Square player, int depth)
+Choice TicTacToeMinimaxAI::minimax(const TicTacToeBoard * board, bool maximize, Square player, int depth)
 {
     auto winner = board->has_winner();
 
@@ -52,7 +52,7 @@ Choice TicTacToeAI::minimax(const TicTacToeBoard * board, bool opponents_turn, S
 
         board_copy.place_marker(i, player);
 
-        auto result = minimax(&board_copy, !opponents_turn, get_other_player(player), depth + 1);
+        auto result = minimax(&board_copy, !maximize, get_other_player(player), depth + 1);
 
         result.move = board_copy.last_move();
 
@@ -65,17 +65,17 @@ Choice TicTacToeAI::minimax(const TicTacToeBoard * board, bool opponents_turn, S
     int worst_value = 100;
 
     for(auto & choice : candidate_choices){
-        if(opponents_turn && choice.value > best_value){
+        if(maximize && choice.value > best_value){
             best_choice = choice;
             best_value = choice.value;
         }
-        else if(!opponents_turn && choice.value < worst_value){
+        else if(!maximize && choice.value < worst_value){
             worst_choice = choice;
             worst_value = choice.value;
         }
     }
 
-    return opponents_turn ? best_choice : worst_choice;
+    return maximize ? best_choice : worst_choice;
 }
 
 

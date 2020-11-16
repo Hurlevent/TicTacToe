@@ -21,14 +21,21 @@ struct Choice{
 
 };
 
-class TicTacToeAI
+class TicTacToeAI {
+public:
+    virtual Vector2 choose_move(const std::shared_ptr<TicTacToeBoard> & board, Square opponent) = 0;
+};
+
+
+class TicTacToeMinimaxAI : public TicTacToeAI
 {
 public:
-    explicit TicTacToeAI();
+    explicit TicTacToeMinimaxAI();
 
-    Vector2 choose_move(const std::shared_ptr<TicTacToeBoard> & board, Square opponent);
+    Vector2 choose_move(const std::shared_ptr<TicTacToeBoard> & board, Square opponent) override;
 
-    Choice minimax(const TicTacToeBoard * board, bool best, Square player, int depth);
+private:
+    Choice minimax(const TicTacToeBoard * board, bool maximize, Square player, int depth);
 
 };
 

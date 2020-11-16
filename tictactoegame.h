@@ -31,7 +31,7 @@ private:
     Square m_player_marker;
     Square m_opponent_marker;
 
-    TicTacToeAI m_opponent_behavour;
+    std::unique_ptr<TicTacToeAI> m_opponent_behavour;
 };
 
 #endif // TICTACTOEGAME_H
