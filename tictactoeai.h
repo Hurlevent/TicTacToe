@@ -12,6 +12,8 @@ struct Choice{
     Choice(Vector2 mv, int val, int dep);
     Choice(const Choice & other);
     Choice & operator=(const Choice & other);
+    Choice(Choice && other);
+    Choice & operator=(Choice && other);
 
     Vector2 move;
     int value;
@@ -26,7 +28,7 @@ public:
 
     Vector2 choose_move(const std::shared_ptr<TicTacToeBoard> & board, Square opponent);
 
-    Choice minimax(const TicTacToeBoard * board, bool best, Square opponent, int depth);
+    Choice minimax(const TicTacToeBoard * board, bool best, Square player, int depth);
 
 };
 

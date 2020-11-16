@@ -3,16 +3,8 @@
 #include <array>
 #include <iostream>
 
-TicTacToeGame::TicTacToeGame() : m_board(std::make_shared<TicTacToeBoard>()), m_opponent_behavour()
-{
-    connect(m_board.get(), &TicTacToeBoard::squareChanged, this, [this](Vector2 position){
-        emit squareChanged(position);
-    });
-
-    connect(m_board.get(), &TicTacToeBoard::squaresChanged, this, [this](){
-        emit squaresChanged();
-    });
-}
+TicTacToeGame::TicTacToeGame(std::shared_ptr<TicTacToeBoard> board) : m_board(board), m_opponent_behavour()
+{}
 
 TicTacToeGame::~TicTacToeGame()
 {
@@ -24,11 +16,6 @@ void TicTacToeGame::init(Square player_marker)
     m_player_marker = player_marker;
     m_opponent_marker = player_marker == Square::Circle ? Square::Cross : Square::Circle;
 
-    m_board->reset_board();
-}
-
-void TicTacToeGame::reset()
-{
     m_board->reset_board();
 }
 
@@ -55,11 +42,6 @@ void TicTacToeGame::update(Vector2 player_clicked)
     } catch(std::logic_error e){
         std::cerr << e.what() << std::endl;
     }
-}
-
-Square TicTacToeGame::get_square(Vector2 position) const
-{
-    return m_board->getSquare(position);
 }
 
 bool TicTacToeGame::check_for_winners()

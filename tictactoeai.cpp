@@ -30,14 +30,14 @@ Square get_other_player(Square plr){
     }
 }
 
-Choice TicTacToeAI::minimax(const TicTacToeBoard * board, bool opponents_turn, Square opponent, int depth)
+Choice TicTacToeAI::minimax(const TicTacToeBoard * board, bool opponents_turn, Square player, int depth)
 {
     auto winner = board->has_winner();
 
-    if(winner == opponent){
+    if(winner == player){
         return Choice{board->last_move(), 10 - depth, depth};
     }
-    else if(winner == get_other_player(opponent)){
+    else if(winner == get_other_player(player)){
         return Choice{board->last_move(), -10 + depth, depth};
     }
     else if(!board->has_space_left()){
@@ -50,9 +50,9 @@ Choice TicTacToeAI::minimax(const TicTacToeBoard * board, bool opponents_turn, S
     for(auto & i : candidates){
         TicTacToeBoard board_copy(*board);
 
-        board_copy.place_marker(i, opponent);
+        board_copy.place_marker(i, player);
 
-        auto result = minimax(&board_copy, !opponents_turn, get_other_player(opponent), depth + 1);
+        auto result = minimax(&board_copy, !opponents_turn, get_other_player(player), depth + 1);
 
         result.move = board_copy.last_move();
 
@@ -87,8 +87,26 @@ Choice::Choice(const Choice &other) : move(other.move), value(other.value), dept
 
 Choice &Choice::operator=(const Choice &other)
 {
-    move = other.move;
-    value = other.value;
-    depth = other.depth;
+    Choice tmp(other);
+    std::swap(tmp.move, move);
+    std::swap(tmp.value, value);
+    std::swap(tmp.depth, depth);
+
+    return *this;
+}
+
+Choice::Choice(Choice &&other)
+{
+    std::swap(other.depth, depth);
+    std::swap(other.move, move);
+    std::swap(other.value, value);
+}
+
+Choice &Choice::operator=(Choice &&other)
+{
+    std::swap(other.depth, depth);
+    std::swap(other.move, move);
+    std::swap(other.value, value);
+
     return *this;
 }

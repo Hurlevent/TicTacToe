@@ -37,6 +37,7 @@ signals:
     void gameOverMessageChanged();
 
 private:
+    std::shared_ptr<TicTacToeBoard> m_board;
     TicTacToeGame m_game;
     bool m_hasStarted;
     QString m_gameOverMessage;

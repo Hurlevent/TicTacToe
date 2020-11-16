@@ -2,13 +2,13 @@
 
 #include <iostream>
 
-TicTacToeTableModel::TicTacToeTableModel(QObject * parent) : m_game(), m_hasStarted(false), m_gameOverMessage(QString())
+TicTacToeTableModel::TicTacToeTableModel(QObject * parent) : m_board(std::make_shared<TicTacToeBoard>()), m_game(m_board), m_hasStarted(false), m_gameOverMessage(QString())
 {
-    connect(&m_game, &TicTacToeGame::squareChanged, this, [this](Vector2 position){
+    connect(m_board.get(), &TicTacToeBoard::squareChanged, this, [this](Vector2 position){
         emit dataChanged(index(position.x, position.y), index(position.x, position.y));
     });
 
-    connect(&m_game, &TicTacToeGame::squaresChanged, this, [this](){
+    connect(m_board.get(), &TicTacToeBoard::squaresChanged, this, [this](){
         emit dataChanged(index(0,0), index(rowCount() - 1, columnCount() - 1));
     });
 
@@ -42,7 +42,7 @@ QVariant TicTacToeTableModel::data(const QModelIndex &index, int role) const
 
     switch(role){
         case ImagePathRole:
-        return QVariant(SquareToString(m_game.get_square({index.row(), index.column()})));
+        return QVariant(SquareToString(m_board->getSquare({index.row(), index.column()})));
     }
 
     return QVariant();
@@ -74,7 +74,7 @@ void TicTacToeTableModel::player_set_piece(int piece_id)
 
 void TicTacToeTableModel::reset_board()
 {
-    m_game.reset();
+    m_board->reset_board();
 
     m_gameOverMessage = QString();
     emit gameOverMessageChanged();
